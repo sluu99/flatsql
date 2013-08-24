@@ -5,3 +5,5 @@ jdk:
 services: mysql
 before_script:
   - mysql -e 'create database myapp_test;'
+notifications:
+  email: false
