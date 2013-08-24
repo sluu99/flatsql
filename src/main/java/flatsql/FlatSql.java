@@ -1,21 +1,10 @@
 package flatsql;
 
-import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.HashMap;
-
-import flatsql.annotations.DataEntity;
-
 /**
  * Starting point for using FlatSql
  * 
  */
 public class FlatSql {
-
-	// -----------------------------------------------------------------------
-	// Instance
-	// -----------------------------------------------------------------------
 
 	private ConnectionPool connPool;
 
@@ -27,16 +16,16 @@ public class FlatSql {
 	public FlatSql(ConnectionPool connPool) {
 		this.connPool = connPool;
 	}
-	
 
+    //<editor-fold desc="Getters & setters">
 
-	// -----------------------------------------------------------------------
-	// Static
-	// -----------------------------------------------------------------------
+    public ConnectionPool getConnectionPool() {
+        return this.connPool;
+    }
 
-	// Cache class meta data
-	private final static HashMap<Class<Entity>, String> tableNames = new HashMap<Class<Entity>, String>();
-	private final static HashMap<Class<Entity>, Method[]> getters = new HashMap<Class<Entity>, Method[]>();
-	private final static HashMap<Class<Entity>, Method[]> setters = new HashMap<Class<Entity>, Method[]>();
+    public void setConnPool(ConnectionPool connPool) {
+        this.connPool = connPool;
+    }
 
+    //</editor-fold>
 }
