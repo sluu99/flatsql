@@ -8,60 +8,46 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-/**
- *
- *
- */
 public class TypeRegistry {
 
     //<editor-fold desc="Private fields">
 
     private ConnectionPool connPool = null;
 
-    private HashMap<Class<? extends Entity>, String> tableNames = new HashMap<Class<? extends Entity>, String>();
+    private HashMap<Class<? extends Entity>, String> tableNames = null;
 
     //</editor-fold>
+
+
 
     //<editor-fold desc="Constructors">
 
     public TypeRegistry(ConnectionPool connectionPool) {
         this.connPool = connectionPool;
+
+        tableNames = new HashMap<>();
     }
 
-    public  TypeRegistry() {
+    public TypeRegistry() {
         this(null);
     }
 
     //</editor-fold>
 
+
+
     //<editor-fold desc="Private instance methods">
-
-    //</editor-fold>
-
-    //<editor-fold desc="Public instance methods">
-
-    /**
-     * Register a type in the database.
-     * Tables will be created automatically.
-     * @param entityClass The entity class
-     * @throws SQLException Thrown when there's error creating the tables
-     */
-    public void registerType(Class<? extends Entity> entityClass) throws SQLException {
-        String entityName = TypeRegistry.getEntityName(entityClass);
-        tableNames.put(entityClass, entityName);
-        this.createTables(entityName);
-    }
 
     /**
      * Create SQL tables for a specific entity name
-     * @param entityName
+     * @param entityName Entity name
      * @throws SQLException
      */
     private void createTables(String entityName) throws SQLException {
 
-        final String tableQuery = String.format(TypeRegistry.TABLE_QUERY_TEMPLATE, entityName, entityName);
-        final String attrQuery = String.format(TypeRegistry.ATTR_QUERY_TEMPLATE, entityName, entityName, entityName, entityName, entityName);
-        final String largeAttrQuery = String.format(TypeRegistry.LARGE_ATTR_QUERY_TEMPLATE, entityName, entityName, entityName, entityName);
+        final String tableQuery = String.format(TABLE_QUERY_TEMPLATE, entityName, entityName);
+        final String attrQuery = String.format(ATTR_QUERY_TEMPLATE, entityName, entityName, entityName, entityName);
+        final String largeAttrQuery = String.format(LARGE_ATTR_QUERY_TEMPLATE, entityName, entityName, entityName);
 
         Connection conn = this.connPool.getConnection();
         conn.setAutoCommit(false);
@@ -74,18 +60,38 @@ public class TypeRegistry {
         } catch (SQLException ex) {
             try {
                 conn.rollback();
-            } catch (SQLException e) {
+            } catch (SQLException ignored) {
             }
             throw ex;
         } finally {
             try {
                 conn.close();
-            } catch (SQLException e) {
+            } catch (SQLException ignored) {
             }
         }
     }
 
     //</editor-fold>
+
+
+
+    //<editor-fold desc="Public instance methods">
+
+    /**
+     * Register a type in the database.
+     * Tables will be created automatically.
+     * @param entityClass The entity class
+     * @throws SQLException Thrown when there's error creating the tables
+     */
+    public void registerType(Class<? extends Entity> entityClass) throws SQLException {
+        String entityName = getEntityName(entityClass);
+        tableNames.put(entityClass, entityName);
+        this.createTables(entityName);
+    }
+
+    //</editor-fold>
+
+
 
     //<editor-fold desc="Static fields">
 
@@ -120,6 +126,8 @@ public class TypeRegistry {
             ")ENGINE=InnoDB";
 
     //</editor-fold>
+
+
 
     //<editor-fold desc="Static methods">
 
