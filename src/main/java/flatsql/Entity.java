@@ -12,7 +12,7 @@ public abstract class Entity {
 	 * Sets the ID for this entity
 	 * @param id
 	 */
-	void setId(String id) {
+	void id(String id) {
 		this.id = id;
 	}
 	
@@ -20,7 +20,7 @@ public abstract class Entity {
 	 * Returns the ID for this entity
 	 * @return The ID, or null if the entity hasn't been persisted
 	 */
-	String getId() { 
+	String id() {
 		return this.id;
 	}
 }
