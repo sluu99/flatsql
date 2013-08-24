@@ -4,7 +4,7 @@ import flatsql.core.TypeRegistry;
 import flatsql.test.MySqlBasedTest;
 import flatsql.test.fixtures.ClassWithDataEntityAnno;
 import flatsql.test.fixtures.ClassWithoutDataEntityAnno;
-import flatsql.test.fixtures.SimpleConnectionPool;
+import flatsql.test.SimpleConnectionPool;
 import org.testng.annotations.Test;
 
 import java.sql.SQLException;
@@ -30,6 +30,11 @@ public class TypeRegistryTest extends MySqlBasedTest {
         assertTableExists("ClassWithoutDataEntityAnnoLargeAttr");
     }
 
+    /**
+     * Registering a class with DataEntity annotation will
+     * create a table with the specified name
+     * @throws SQLException
+     */
     public void testDataAnnotationTableName() throws SQLException {
         TypeRegistry registry = new TypeRegistry((new SimpleConnectionPool()));
         registry.registerType(ClassWithDataEntityAnno.class);
@@ -38,5 +43,7 @@ public class TypeRegistryTest extends MySqlBasedTest {
         assertTableExists("CustomTableNameAttr");
         assertTableExists("CustomTableNameLargeAttr");
     }
+
+
 
 }

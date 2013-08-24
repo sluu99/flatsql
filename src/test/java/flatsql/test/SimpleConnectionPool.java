@@ -1,7 +1,6 @@
-package flatsql.test.fixtures;
+package flatsql.test;
 
 import flatsql.ConnectionPool;
-import flatsql.test.TestHelper;
 
 import java.sql.Connection;
 
