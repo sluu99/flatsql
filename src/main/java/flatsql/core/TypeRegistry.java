@@ -28,10 +28,6 @@ public class TypeRegistry {
         tableNames = new HashMap<>();
     }
 
-    public TypeRegistry() {
-        this(null);
-    }
-
     //</editor-fold>
 
 
