@@ -10,11 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- *
- *
- */
-public class MySqlBasedTest {
+
+public abstract class MySqlBasedTest {
 
     protected Connection conn = null;
 
@@ -41,7 +38,6 @@ public class MySqlBasedTest {
         try {
             TestHelper.dropTestDatabase();
         } catch (Exception ex) {
-
         }
     }
 
