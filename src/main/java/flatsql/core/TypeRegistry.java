@@ -45,7 +45,7 @@ public class TypeRegistry {
      */
     private void createTables(String entityName) throws SQLException {
 
-        final String tableQuery = String.format(TABLE_QUERY_TEMPLATE, entityName, entityName);
+        final String tableQuery = String.format(TABLE_QUERY_TEMPLATE, entityName, entityName, entityName);
         final String attrQuery = String.format(ATTR_QUERY_TEMPLATE, entityName, entityName, entityName, entityName);
         final String largeAttrQuery = String.format(LARGE_ATTR_QUERY_TEMPLATE, entityName, entityName, entityName);
 
@@ -100,8 +100,10 @@ public class TypeRegistry {
             "  id varchar(64) not null," +
             "  name varchar(256)," +
             "  creation_epoch bigint not null," +
+            "  update_epoch bigint not null," +
             "  PRIMARY KEY (id)," +
-            "  INDEX %s_ix_creation_epoch (creation_epoch)" +
+            "  INDEX %s_ix_creation_epoch (creation_epoch)," +
+            "  INDEX %s_ix_update_epoch (update_epoch)" +
             ")ENGINE=InnoDB";
 
     private static final String ATTR_QUERY_TEMPLATE =
