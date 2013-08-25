@@ -19,60 +19,74 @@ import java.lang.reflect.*;
 
 /**
  * Test class for TypeRegistry
- *
+ * 
  */
 
 @Test
 public class TypeRegistryTest extends MySqlBasedTest {
 
-    /**
-     * This test ensure that registering a class without the DataEntity annotation
-     * will use the class name as table name
-     * @throws ConnectionPoolException 
-     */
-    public void testClassNameAsTableName() throws SQLException, ConnectionPoolException {
-        TypeRegistry registry = new TypeRegistry(new SimpleConnectionPool());
-        registry.registerType(ClassWithoutDataEntityAnno.class);
+	/**
+	 * This test ensure that registering a class without the DataEntity
+	 * annotation will use the class name as table name
+	 * 
+	 * @throws ConnectionPoolException
+	 */
+	public void testClassNameAsTableName() throws SQLException,
+			ConnectionPoolException {
+		TypeRegistry registry = new TypeRegistry(new SimpleConnectionPool());
+		registry.registerType(ClassWithoutDataEntityAnno.class);
 
-        assertTableExists("ClassWithoutDataEntityAnno");
-        assertTableExists("ClassWithoutDataEntityAnnoAttr");
-        assertTableExists("ClassWithoutDataEntityAnnoLargeAttr");
-        
-        assertEquals(registry.getEntityTableName(ClassWithoutDataEntityAnno.class), "ClassWithoutDataEntityAnno");
-        assertEquals(registry.getAttrTableName(ClassWithoutDataEntityAnno.class), "ClassWithoutDataEntityAnnoAttr");
-        assertEquals(registry.getLargeAttrTableName(ClassWithoutDataEntityAnno.class), "ClassWithoutDataEntityAnnoLargeAttr");
-    }
+		assertTableExists("ClassWithoutDataEntityAnno");
+		assertTableExists("ClassWithoutDataEntityAnnoAttr");
+		assertTableExists("ClassWithoutDataEntityAnnoLargeAttr");
 
-    /**
-     * Registering a class with DataEntity annotation will
-     * create a table with the specified name
-     * @throws SQLException
-     * @throws ConnectionPoolException 
-     */
-    public void testDataAnnotationTableName() throws SQLException, ConnectionPoolException {
-        TypeRegistry registry = new TypeRegistry((new SimpleConnectionPool()));
-        registry.registerType(ClassWithDataEntityAnno.class);
+		assertEquals(
+				registry.getEntityTableName(ClassWithoutDataEntityAnno.class),
+				"ClassWithoutDataEntityAnno");
+		assertEquals(
+				registry.getAttrTableName(ClassWithoutDataEntityAnno.class),
+				"ClassWithoutDataEntityAnnoAttr");
+		assertEquals(
+				registry.getLargeAttrTableName(ClassWithoutDataEntityAnno.class),
+				"ClassWithoutDataEntityAnnoLargeAttr");
+	}
 
-        assertTableExists("CustomTableName");
-        assertTableExists("CustomTableNameAttr");
-        assertTableExists("CustomTableNameLargeAttr");
-        
-        assertEquals(registry.getEntityTableName(ClassWithDataEntityAnno.class), "CustomTableName");
-        assertEquals(registry.getAttrTableName(ClassWithDataEntityAnno.class), "CustomTableNameAttr");
-        assertEquals(registry.getLargeAttrTableName(ClassWithDataEntityAnno.class), "CustomTableNameLargeAttr");
-    }
+	/**
+	 * Registering a class with DataEntity annotation will create a table with
+	 * the specified name
+	 * 
+	 * @throws SQLException
+	 * @throws ConnectionPoolException
+	 */
+	public void testDataAnnotationTableName() throws SQLException,
+			ConnectionPoolException {
+		TypeRegistry registry = new TypeRegistry((new SimpleConnectionPool()));
+		registry.registerType(ClassWithDataEntityAnno.class);
 
-    
-    public void testGetters() throws SQLException, ConnectionPoolException {
-    	TypeRegistry registry = new TypeRegistry(new SimpleConnectionPool());
-    	registry.registerType(Animal.class);
-    	
-    	HashMap<String, Method> getters = registry.getGetters(Animal.class);
-    	
-    	assertTrue(getters.containsKey("Age"));
-    	assertTrue(getters.containsKey("Name"));
-    	assertTrue(getters.containsKey("AnimalType"));
-    	assertTrue(getters.containsKey("Pet"));
-    }
+		assertTableExists("CustomTableName");
+		assertTableExists("CustomTableNameAttr");
+		assertTableExists("CustomTableNameLargeAttr");
+
+		assertEquals(
+				registry.getEntityTableName(ClassWithDataEntityAnno.class),
+				"CustomTableName");
+		assertEquals(registry.getAttrTableName(ClassWithDataEntityAnno.class),
+				"CustomTableNameAttr");
+		assertEquals(
+				registry.getLargeAttrTableName(ClassWithDataEntityAnno.class),
+				"CustomTableNameLargeAttr");
+	}
+
+	public void testGetters() throws SQLException, ConnectionPoolException {
+		TypeRegistry registry = new TypeRegistry(new SimpleConnectionPool());
+		registry.registerType(Animal.class);
+
+		HashMap<String, Method> getters = registry.getGetters(Animal.class);
+
+		assertTrue(getters.containsKey("Age"));
+		assertTrue(getters.containsKey("Name"));
+		assertTrue(getters.containsKey("AnimalType"));
+		assertTrue(getters.containsKey("Pet"));
+	}
 
 }

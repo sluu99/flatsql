@@ -2,23 +2,22 @@ package flatsql.test.fixtures;
 
 public class Animal extends LivingThing {
 
-    private AnimalType animalType = null;
-    private boolean isPet = false;
+	private AnimalType animalType = null;
+	private boolean isPet = false;
 
+	public AnimalType getAnimalType() {
+		return animalType;
+	}
 
-    public AnimalType getAnimalType() {
-        return animalType;
-    }
+	public void setAnimalType(AnimalType animalType) {
+		this.animalType = animalType;
+	}
 
-    public void setAnimalType(AnimalType animalType) {
-        this.animalType = animalType;
-    }
+	public boolean isPet() {
+		return isPet;
+	}
 
-    public boolean isPet() {
-        return isPet;
-    }
-
-    public void setPet(boolean pet) {
-        isPet = pet;
-    }
+	public void setPet(boolean pet) {
+		isPet = pet;
+	}
 }

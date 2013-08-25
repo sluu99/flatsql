@@ -7,6 +7,6 @@ import flatsql.annotations.DataEntity;
  *
  *
  */
-@DataEntity(name="CustomTableName")
+@DataEntity(name = "CustomTableName")
 public class ClassWithDataEntityAnno extends Entity {
 }
