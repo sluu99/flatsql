@@ -48,7 +48,12 @@ public class FlatSqlTest extends MySqlBasedTest {
         Assert.assertEquals(duke.getAge(), 12);
         Assert.assertEquals(duke.getAnimalType(), AnimalType.DOG);
 
-        assertRecordExists("Animal", duke.id(), duke.name());        
+        assertRecordExists("Animal", duke.id(), duke.name());
+        
+        assertAttrExists("Animal", duke.id(), "Pet", "true", null);
+        assertAttrExists("Animal", duke.id(), "Age", "12", null);
+        assertAttrExists("Animal", duke.id(), "AnimalType", "DOG", null);
+        assertAttrExists("Animal", duke.id(), "Name", "Duke", null);
     }
 
 
