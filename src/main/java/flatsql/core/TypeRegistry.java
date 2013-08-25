@@ -10,17 +10,17 @@ import java.util.HashMap;
 
 public class TypeRegistry {
 
-    //<editor-fold desc="Private fields">
-
+	// Private fields
+	// =======================================================================
+	
     private ConnectionPool connPool = null;
 
     private HashMap<Class<? extends Entity>, String> tableNames = null;
 
-    //</editor-fold>
 
+	// Constructors
+	// =======================================================================
 
-
-    //<editor-fold desc="Constructors">
 
     public TypeRegistry(ConnectionPool connectionPool) {
         this.connPool = connectionPool;
@@ -28,11 +28,10 @@ public class TypeRegistry {
         tableNames = new HashMap<>();
     }
 
-    //</editor-fold>
+	
+    // Private methods
+	// =======================================================================
 
-
-
-    //<editor-fold desc="Private instance methods">
 
     /**
      * Create SQL tables for a specific entity name
@@ -67,11 +66,10 @@ public class TypeRegistry {
         }
     }
 
-    //</editor-fold>
 
 
-
-    //<editor-fold desc="Public instance methods">
+	// Public methods
+	// =======================================================================
 
     /**
      * Register a type in the database.
@@ -85,11 +83,9 @@ public class TypeRegistry {
         this.createTables(entityName);
     }
 
-    //</editor-fold>
-
-
-
-    //<editor-fold desc="Static fields">
+    
+	// Static fields
+	// =======================================================================
 
     private static final String TABLE_QUERY_TEMPLATE =
         "CREATE TABLE IF NOT EXISTS %s (" +
@@ -123,11 +119,9 @@ public class TypeRegistry {
             "  FOREIGN KEY(entity_id) REFERENCES %s(id) ON DELETE CASCADE" +
             ")ENGINE=InnoDB";
 
-    //</editor-fold>
-
-
-
-    //<editor-fold desc="Static methods">
+	
+    // Static methods
+	// =======================================================================
 
     /**
      * Get an entity class' name
@@ -144,6 +138,4 @@ public class TypeRegistry {
         }
         return name;
     }
-
-    //</editor-fold>
 }
