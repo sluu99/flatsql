@@ -10,6 +10,7 @@ import flatsql.test.SimpleConnectionPool;
 import org.testng.annotations.Test;
 
 import java.sql.SQLException;
+import static org.testng.Assert.*;
 
 /**
  * Test class for TypeRegistry
@@ -31,6 +32,10 @@ public class TypeRegistryTest extends MySqlBasedTest {
         assertTableExists("ClassWithoutDataEntityAnno");
         assertTableExists("ClassWithoutDataEntityAnnoAttr");
         assertTableExists("ClassWithoutDataEntityAnnoLargeAttr");
+        
+        assertEquals(registry.getEntityTableName(ClassWithoutDataEntityAnno.class), "ClassWithoutDataEntityAnno");
+        assertEquals(registry.getAttrTableName(ClassWithoutDataEntityAnno.class), "ClassWithoutDataEntityAnnoAttr");
+        assertEquals(registry.getLargeAttrTableName(ClassWithoutDataEntityAnno.class), "ClassWithoutDataEntityAnnoLargeAttr");
     }
 
     /**
@@ -46,6 +51,10 @@ public class TypeRegistryTest extends MySqlBasedTest {
         assertTableExists("CustomTableName");
         assertTableExists("CustomTableNameAttr");
         assertTableExists("CustomTableNameLargeAttr");
+        
+        assertEquals(registry.getEntityTableName(ClassWithDataEntityAnno.class), "CustomTableName");
+        assertEquals(registry.getAttrTableName(ClassWithDataEntityAnno.class), "CustomTableNameAttr");
+        assertEquals(registry.getLargeAttrTableName(ClassWithDataEntityAnno.class), "CustomTableNameLargeAttr");
     }
 
 
