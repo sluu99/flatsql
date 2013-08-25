@@ -2,7 +2,7 @@
 <suite name="CoreSuite" verbose="1">
     <test name="FullTest">
         <packages>
-            <package name="flatsql.test.core" />
+            <package name="flatsql" />
         </packages>
     </test>
 </suite>

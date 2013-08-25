@@ -1,14 +1,13 @@
-package flatsql.core;
+package flatsql;
 
-import flatsql.ConnectionPool;
-import flatsql.Entity;
+import exceptions.ConnectionPoolException;
 import flatsql.annotations.DataEntity;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-public class TypeRegistry {
+final class TypeRegistry {
 
 	// Private fields
 	// =======================================================================
@@ -37,8 +36,9 @@ public class TypeRegistry {
      * Create SQL tables for a specific entity name
      * @param entityName Entity name
      * @throws SQLException
+     * @throws ConnectionPoolException 
      */
-    private void createTables(String entityName) throws SQLException {
+    private void createTables(String entityName) throws SQLException, ConnectionPoolException {
 
         final String tableQuery = String.format(TABLE_QUERY_TEMPLATE, entityName, entityName, entityName);
         final String attrQuery = String.format(ATTR_QUERY_TEMPLATE, entityName, entityName, entityName, entityName);
@@ -76,13 +76,55 @@ public class TypeRegistry {
      * Tables will be created automatically.
      * @param entityClass The entity class
      * @throws SQLException Thrown when there's error creating the tables
+     * @throws ConnectionPoolException 
      */
-    public void registerType(Class<? extends Entity> entityClass) throws SQLException {
+    public void registerType(Class<? extends Entity> entityClass) throws SQLException, ConnectionPoolException {
+    	if (entityClass == null) {
+    		return;
+    	}
+    	
         String entityName = getEntityName(entityClass);
         tableNames.put(entityClass, entityName);
         this.createTables(entityName);
     }
+    
+    /**
+     * Get the entity table name
+     * @param entityClass
+     * @return
+     */
+    public String getEntityTableName(Class<? extends Entity> entityClass) {    	
+    	if (entityClass == null || !tableNames.containsKey(entityClass))
+    		return null;
+    	
+    	return tableNames.get(entityClass);
+    }
 
+    /**
+     * Get the attribute table name
+     * @param entityClass
+     * @return
+     */
+    public String getAttrTableName(Class<? extends Entity> entityClass) {
+    	String tableName = getEntityTableName(entityClass);
+    	if (tableName != null) {
+    		tableName += "Attr";
+    	}
+    	return tableName;
+    }
+    
+    /**
+     * Get the large attribute table name
+     * @param entityClass
+     * @return
+     */
+    public String getLargeAttrTableName(Class<? extends Entity> entityClass) {
+    	String tableName = getEntityTableName(entityClass);
+    	if (tableName != null) {
+    		tableName += "LargeAttr";
+    	}
+    	return tableName;
+    }
     
 	// Static fields
 	// =======================================================================
