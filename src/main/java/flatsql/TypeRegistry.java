@@ -3,6 +3,7 @@ package flatsql;
 import exceptions.ConnectionPoolException;
 import flatsql.annotations.DataEntity;
 
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ final class TypeRegistry {
     private ConnectionPool connPool = null;
 
     private HashMap<Class<? extends Entity>, String> tableNames = null;
+    private HashMap<Class<? extends Entity>, HashMap<String, Method>> getters = null;
 
 
 	// Constructors
@@ -25,6 +27,7 @@ final class TypeRegistry {
         this.connPool = connectionPool;
 
         tableNames = new HashMap<>();
+        getters = new HashMap<>();
     }
 
 	
@@ -79,12 +82,26 @@ final class TypeRegistry {
      * @throws ConnectionPoolException 
      */
     public void registerType(Class<? extends Entity> entityClass) throws SQLException, ConnectionPoolException {
-    	if (entityClass == null) {
+    	if (entityClass == null || tableNames.containsKey(entityClass)) {
     		return;
     	}
     	
         String entityName = getEntityName(entityClass);
         tableNames.put(entityClass, entityName);
+        
+        Method[] methods = entityClass.getMethods();
+        String attrName = null;
+        HashMap<String, Method> getters = new HashMap<>();
+        
+        for (Method m : methods) {
+        	if (isGetter(m)) {
+        		attrName = getAttrNameFromSetter(m);
+        		getters.put(attrName, m);
+        	}
+        }
+        
+        this.getters.put(entityClass, getters);
+        
         this.createTables(entityName);
     }
     
@@ -126,6 +143,18 @@ final class TypeRegistry {
     	return tableName;
     }
     
+    /**
+     * Get a map of attributes and getter methods for a specific entity class 
+     * @param entityClass The entity class
+     * @return
+     */
+    public HashMap<String, Method> getGetters(Class<? extends Entity> entityClass) {
+    	if (entityClass == null || !getters.containsKey(entityClass))
+    		return null;
+    	
+    	return getters.get(entityClass);
+    }
+    
 	// Static fields
 	// =======================================================================
 
@@ -165,6 +194,42 @@ final class TypeRegistry {
     // Static methods
 	// =======================================================================
 
+    /**
+     * Returns true if a method is a getter, false otherwise
+     * @param method
+     * @return
+     */
+    private static boolean isGetter(Method method) {
+    	if (method == null)
+    		return false;
+    	
+    	Class<?> returnType = method.getReturnType();
+    	if (	returnType != boolean.class && returnType != String.class && 
+    			returnType != int.class && returnType != long.class && 
+    			returnType != float.class && returnType != double.class &&
+    			!returnType.isEnum()) {
+    		return false;
+    	}
+    	
+    	String methodName = method.getName();
+    	if (!(	(methodName.startsWith("get") && methodName.length() > 3) ||
+    			(methodName.startsWith("is") && methodName.length() > 2))) {
+    		return false;
+    	}
+    	
+    	return true;
+    }
+    
+    private static String getAttrNameFromSetter(Method m) {
+    	String methodName = m.getName();
+    	if (methodName.startsWith("is"))
+    		return methodName.substring(2);
+    	else if (methodName.startsWith("get"))
+    		return methodName.substring(3);
+    	
+    	return null;
+    }
+    
     /**
      * Get an entity class' name
      *

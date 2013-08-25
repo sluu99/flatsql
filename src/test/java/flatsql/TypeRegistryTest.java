@@ -3,6 +3,7 @@ package flatsql;
 import exceptions.ConnectionPoolException;
 import flatsql.TypeRegistry;
 import flatsql.test.MySqlBasedTest;
+import flatsql.test.fixtures.Animal;
 import flatsql.test.fixtures.ClassWithDataEntityAnno;
 import flatsql.test.fixtures.ClassWithoutDataEntityAnno;
 import flatsql.test.SimpleConnectionPool;
@@ -10,7 +11,11 @@ import flatsql.test.SimpleConnectionPool;
 import org.testng.annotations.Test;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+
 import static org.testng.Assert.*;
+
+import java.lang.reflect.*;
 
 /**
  * Test class for TypeRegistry
@@ -57,6 +62,17 @@ public class TypeRegistryTest extends MySqlBasedTest {
         assertEquals(registry.getLargeAttrTableName(ClassWithDataEntityAnno.class), "CustomTableNameLargeAttr");
     }
 
-
+    
+    public void testGetters() throws SQLException, ConnectionPoolException {
+    	TypeRegistry registry = new TypeRegistry(new SimpleConnectionPool());
+    	registry.registerType(Animal.class);
+    	
+    	HashMap<String, Method> getters = registry.getGetters(Animal.class);
+    	
+    	assertTrue(getters.containsKey("Age"));
+    	assertTrue(getters.containsKey("Name"));
+    	assertTrue(getters.containsKey("AnimalType"));
+    	assertTrue(getters.containsKey("Pet"));
+    }
 
 }
