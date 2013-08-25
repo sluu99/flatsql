@@ -25,7 +25,7 @@ public class FlatSql {
     	this.idGen = idGen;
     	
         this.registry = new TypeRegistry(connPool);
-        this.storage = new Storage(connPool);
+        this.storage = new Storage(connPool, registry);
     }
     
 	/**
@@ -66,19 +66,19 @@ public class FlatSql {
      * @return true if the operation is successful,false otherwise
      */
     public boolean persist(Entity entity, StringBuilder error) {
-    	if (entity.id() == null) {
-        	entity.id(idGen.newId());
-        	
-        	try {
-				storage.insertEntity(registry.getEntityTableName(entity.getClass()), entity);				
-			} catch (ConnectionPoolException | SQLException e) {
-				if (error != null) {
-					error.append(e.getMessage());
-				}
-				return false;
+    	
+    	try {
+    		if (entity.id() == null) {
+            	entity.id(idGen.newId());
+            	storage.insert(entity);
+            }
+							
+		} catch (ConnectionPoolException | SQLException e) {
+			if (error != null) {
+				error.append(e.getMessage());
 			}
-        		
-        }
+			return false;
+		}
                 
         return true;
     }
