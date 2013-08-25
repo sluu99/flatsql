@@ -118,7 +118,7 @@ public abstract class MySqlBasedTest {
             stmt.setString(4, meta);
 
             rs = stmt.executeQuery();
-            if (!rs.next() || rs.getInt(1) == 1) {
+            if (!rs.next() || rs.getInt(1) != 1) {
                 Assert.fail("There must only be 1 row");
             }
 
@@ -129,7 +129,6 @@ public abstract class MySqlBasedTest {
         } finally {
             JdbcUtil.close(rs, stmt);
         }
-        Assert.fail("Need to implement this");
     }
 
     /**
@@ -146,7 +145,7 @@ public abstract class MySqlBasedTest {
 
     /**
      * Assert that a normal attribute exists
-     * @param tableName The (entity) table name (without Largethe Attr part)
+     * @param tableName The (entity) table name (without the LargeAttr part)
      * @param id Entity ID
      * @param key The key
      * @param value The value
