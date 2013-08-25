@@ -74,7 +74,9 @@ public abstract class MySqlBasedTest {
      */
     protected void assertRecordExists(String tableName, String id, String entityName) {
         String query = String.format(
-        		"SELECT COUNT(id) FROM %s WHERE id=? and name=?", tableName);
+        		"SELECT COUNT(id) FROM %s WHERE id=? and name %s ?",
+        		tableName, 
+        		(entityName == null) ? "is" : "=");
         
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -103,9 +105,10 @@ public abstract class MySqlBasedTest {
      * @param meta The meta data
      */
     private void internalAssertAttrExists(String tableName, String id, String key, String value, String meta) {
-        String query = String.format(
-                "SELECT COUNT(entity_id) FROM %s WHERE entity_id=? and attr_key=? and attr_value=? and attr_meta=?",
-                tableName);
+    	String template = "SELECT COUNT(entity_id) FROM %s WHERE entity_id=? and attr_key=? and attr_value %s ? and attr_meta %s ?";    	
+		String valueOp = (value == null) ? "is" : "=";
+		String metaOp = (meta == null) ? "is" : "=";
+        String query = String.format(template, tableName, valueOp, metaOp);
 
         PreparedStatement stmt = null;
         ResultSet rs = null;
