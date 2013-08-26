@@ -166,8 +166,7 @@ final class TypeRegistry {
 	 *            The entity class
 	 * @return
 	 */
-	public HashMap<String, Method> getGetters(
-			Class<? extends Entity> entityClass) {
+	public HashMap<String, Method> getAttributes(Class<? extends Entity> entityClass) {
 		if (entityClass == null || !getters.containsKey(entityClass))
 			return null;
 

@@ -121,7 +121,7 @@ final class Storage {
 			registry.getAttrTableName(entityClass), 
 			conn, 
 			entity,
-			registry.getGetters(entityClass));
+			registry.getAttributes(entityClass));
 	}
 
 	/**

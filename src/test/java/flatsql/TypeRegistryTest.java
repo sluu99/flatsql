@@ -87,7 +87,7 @@ public class TypeRegistryTest extends MySqlBasedTest {
 		TypeRegistry registry = new TypeRegistry(new SimpleConnectionPool());
 		registry.registerType(Animal.class);
 
-		HashMap<String, Method> getters = registry.getGetters(Animal.class);
+		HashMap<String, Method> getters = registry.getAttributes(Animal.class);
 
 		assertTrue(getters.containsKey("Age"));
 		assertTrue(getters.containsKey("Name"));
