@@ -9,8 +9,7 @@ import flatsql.exceptions.ConnectionPoolException;
  * 
  */
 public class FlatSql {
-
-	private ConnectionPool connPool = null;
+	
 	private TypeRegistry registry = null;
 	private IdGenerator idGen = null;
 	private Storage storage = null;
@@ -22,7 +21,7 @@ public class FlatSql {
 	 * @param idGen
 	 */
 	public FlatSql(ConnectionPool connPool, IdGenerator idGen) {
-		this.connPool = connPool;
+
 		this.idGen = idGen;
 
 		this.registry = new TypeRegistry(connPool);
@@ -90,14 +89,6 @@ public class FlatSql {
 		}
 
 		return true;
-	}
-
-	public ConnectionPool getConnectionPool() {
-		return this.connPool;
-	}
-
-	public void setConnPool(ConnectionPool connPool) {
-		this.connPool = connPool;
 	}
 
 }
