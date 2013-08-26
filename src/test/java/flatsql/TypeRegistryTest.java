@@ -93,6 +93,8 @@ public class TypeRegistryTest extends MySqlBasedTest {
 		assertTrue(getters.containsKey("Name"));
 		assertTrue(getters.containsKey("AnimalType"));
 		assertTrue(getters.containsKey("Pet"));
+		
+		assertFalse(getters.containsKey("DogAge"));
 	}
 	
 	/**
