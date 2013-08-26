@@ -1,6 +1,7 @@
 package flatsql;
 
 import flatsql.annotations.DataEntity;
+import flatsql.annotations.Ignore;
 import flatsql.exceptions.ConnectionPoolException;
 
 import java.lang.reflect.Method;
@@ -228,6 +229,10 @@ final class TypeRegistry {
 		String methodName = method.getName();
 		if (!((methodName.startsWith("get") && methodName.length() > 3) || (methodName
 				.startsWith("is") && methodName.length() > 2))) {
+			return false;
+		}
+		
+		if (method.getAnnotation(Ignore.class) != null) {
 			return false;
 		}
 
