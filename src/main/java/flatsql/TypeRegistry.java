@@ -217,7 +217,10 @@ final class TypeRegistry {
 		if (method == null)
 			return false;
 
-		Class<?> returnType = method.getReturnType();
+		boolean isArray = method.getReturnType().isArray();
+		
+		Class<?> returnType = (isArray)? method.getReturnType().getComponentType() : method.getReturnType();
+		
 		if (returnType != boolean.class && returnType != String.class
 				&& returnType != int.class && returnType != long.class
 				&& returnType != float.class && returnType != double.class

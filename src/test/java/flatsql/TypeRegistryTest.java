@@ -97,6 +97,15 @@ public class TypeRegistryTest extends MySqlBasedTest {
 		assertFalse(getters.containsKey("DogAge"));
 	}
 	
+	public void testArrayAttribute() throws SQLException, ConnectionPoolException {
+		
+		TypeRegistry registry = new TypeRegistry(new SimpleConnectionPool());
+		registry.registerType(Person.class);		
+		
+		HashMap<String, Method> attrs = registry.getAttributes(Person.class);
+		assertTrue(attrs.containsKey("Pets"));
+	}
+	
 	/**
 	 * Ensure that isTypeRegistered returns correctly
 	 * @return 
