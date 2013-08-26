@@ -107,6 +107,15 @@ final class TypeRegistry {
 
 		this.createTables(entityName);
 	}
+	
+	/**
+	 * Checks if a particular entity type is registered
+	 * @param entityClass The entity class
+	 * @return true if type is registered, false otherwise
+	 */
+	public boolean isTypeRegistered(Class<? extends Entity> entityClass) {
+		return tableNames.containsKey(entityClass);
+	}
 
 	/**
 	 * Get the entity table name

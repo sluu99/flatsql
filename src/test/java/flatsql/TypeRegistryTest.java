@@ -6,6 +6,7 @@ import flatsql.test.MySqlBasedTest;
 import flatsql.test.fixtures.Animal;
 import flatsql.test.fixtures.ClassWithDataEntityAnno;
 import flatsql.test.fixtures.ClassWithoutDataEntityAnno;
+import flatsql.test.fixtures.Person;
 import flatsql.test.SimpleConnectionPool;
 
 import org.testng.annotations.Test;
@@ -77,6 +78,11 @@ public class TypeRegistryTest extends MySqlBasedTest {
 				"CustomTableNameLargeAttr");
 	}
 
+	/**
+	 * Ensure that getters are registered properly
+	 * @throws SQLException
+	 * @throws ConnectionPoolException
+	 */
 	public void testGetters() throws SQLException, ConnectionPoolException {
 		TypeRegistry registry = new TypeRegistry(new SimpleConnectionPool());
 		registry.registerType(Animal.class);
@@ -87,6 +93,26 @@ public class TypeRegistryTest extends MySqlBasedTest {
 		assertTrue(getters.containsKey("Name"));
 		assertTrue(getters.containsKey("AnimalType"));
 		assertTrue(getters.containsKey("Pet"));
+	}
+	
+	/**
+	 * Ensure that isTypeRegistered returns correctly
+	 * @return 
+	 * @throws ConnectionPoolException 
+	 * @throws SQLException 
+	 */
+	public void testIsRegistered() throws SQLException, ConnectionPoolException {
+		TypeRegistry registry = new TypeRegistry(new SimpleConnectionPool());
+		
+		assertFalse(registry.isTypeRegistered(Animal.class));
+		
+		registry.registerType(Animal.class);
+		
+		assertFalse(registry.isTypeRegistered(Person.class));
+		assertTrue(registry.isTypeRegistered(Animal.class));
+		
+		registry.registerType(Person.class);
+		assertTrue(registry.isTypeRegistered(Person.class));		
 	}
 
 }
