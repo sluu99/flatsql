@@ -83,7 +83,7 @@ public class TypeRegistryTest extends MySqlBasedTest {
 	 * @throws SQLException
 	 * @throws ConnectionPoolException
 	 */
-	public void testGetters() throws SQLException, ConnectionPoolException {
+	public void testAttributes() throws SQLException, ConnectionPoolException {
 		TypeRegistry registry = new TypeRegistry(new SimpleConnectionPool());
 		registry.registerType(Animal.class);
 
