@@ -39,19 +39,15 @@ final class Storage {
 		String tableName = registry.getEntityTableName(entityClass);
 
 		if (tableName == null) {
-			throw new NullPointerException(
-					"Table name is null. Perhaps you forgot to register the type?");
+			throw new NullPointerException("Table name is null. Perhaps you forgot to register the type?");
 		}
 
 		try {
 			conn = connPool.getConnection();
 			conn.setAutoCommit(false);
 
-			insertEntity(tableName, entity, conn);
-			persistAttributes(registry.getAttrTableName(entityClass), entity,
-					conn, false);
-			persistAttributes(registry.getLargeAttrTableName(entityClass),
-					entity, conn, true);
+			insertEntity(entity, conn);
+			persistAttributes(entity, conn);
 
 			conn.commit();
 		} catch (ConnectionPoolException | SQLException e) {
@@ -62,16 +58,18 @@ final class Storage {
 		}
 	}
 
-	private void persistAttributes(String tableName, Entity entity,
-			Connection conn, boolean largeAttr) throws SQLException {
-		if (largeAttr)
+	/**
+	 * Persist an entity's attribute based on the provided getters
+	 * @param tableName
+	 * @param conn
+	 * @param entity
+	 * @param getters
+	 * @throws SQLException
+	 */
+	private void persistAttributes(String tableName, Connection conn, Entity entity, HashMap<String, Method> getters) throws SQLException {
+		if (getters == null || getters.size() == 0) {
 			return;
-
-		HashMap<String, Method> getters = registry
-				.getGetters(entity.getClass());
-
-		if (getters == null || getters.size() == 0)
-			return;
+		}
 
 		String attrSql = String.format(INSERT_ATTR_SQL, tableName);
 
@@ -79,11 +77,12 @@ final class Storage {
 		PreparedStatement[] stmts = new PreparedStatement[getters.size()];
 
 		try {
-			deleteStmt = conn.prepareStatement(String.format(DELETE_ATTR_SQL,
-					tableName));
+			// delete the old attributes
+			deleteStmt = conn.prepareStatement(String.format(DELETE_ATTR_SQL, tableName));
 			deleteStmt.setString(1, entity.id());
 			deleteStmt.execute();
 
+			// insert each of the new attributes
 			Iterator<Entry<String, Method>> it = getters.entrySet().iterator();
 			int i = 0;
 			while (it.hasNext()) {
@@ -108,9 +107,34 @@ final class Storage {
 			}
 		}
 	}
+	
+	/**
+	 * Persist an object's attribute into the database
+	 * @param entity The entity
+	 * @param conn Connection
+	 * @throws SQLException
+	 */
+	private void persistAttributes(Entity entity, Connection conn) throws SQLException {
 
-	private void insertEntity(String tableName, Entity entity, Connection conn)
-			throws SQLException {
+		Class<? extends Entity> entityClass = entity.getClass();		
+		persistAttributes(
+			registry.getAttrTableName(entityClass), 
+			conn, 
+			entity,
+			registry.getGetters(entityClass));
+	}
+
+	/**
+	 * Insert a new entity into the database
+	 * @param tableName
+	 * @param entity
+	 * @param conn
+	 * @throws SQLException
+	 */
+	private void insertEntity(Entity entity, Connection conn) throws SQLException {
+		
+		String tableName = registry.getEntityTableName(entity.getClass());
+		
 		PreparedStatement stmt = null;
 		long now = System.currentTimeMillis();
 
@@ -141,7 +165,7 @@ final class Storage {
 			+ "VALUES (?, ?, ?, ?)";
 
 	/**
-	 * Convert to a String
+	 * Convert a value to String based on its type
 	 */
 	private static String convertToString(Object val, Class<?> fromType) {
 		String value = null;
