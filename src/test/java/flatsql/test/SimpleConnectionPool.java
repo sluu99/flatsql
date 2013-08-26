@@ -1,7 +1,7 @@
 package flatsql.test;
 
-import exceptions.ConnectionPoolException;
 import flatsql.ConnectionPool;
+import flatsql.exceptions.ConnectionPoolException;
 
 import java.sql.Connection;
 

@@ -1,7 +1,7 @@
 package flatsql;
 
-import exceptions.ConnectionPoolException;
 import flatsql.FlatSql;
+import flatsql.exceptions.ConnectionPoolException;
 import flatsql.test.MySqlBasedTest;
 import flatsql.test.SimpleConnectionPool;
 import flatsql.test.fixtures.Animal;

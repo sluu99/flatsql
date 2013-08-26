@@ -1,7 +1,7 @@
 package flatsql;
 
-import exceptions.ConnectionPoolException;
 import flatsql.annotations.DataEntity;
+import flatsql.exceptions.ConnectionPoolException;
 
 import java.lang.reflect.Method;
 import java.sql.Connection;

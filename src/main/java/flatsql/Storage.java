@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import exceptions.ConnectionPoolException;
+import flatsql.exceptions.ConnectionPoolException;
 import flatsql.util.JdbcUtil;
 
 final class Storage {

@@ -2,7 +2,7 @@ package flatsql;
 
 import java.sql.SQLException;
 
-import exceptions.ConnectionPoolException;
+import flatsql.exceptions.ConnectionPoolException;
 
 /**
  * Starting point for using FlatSql
