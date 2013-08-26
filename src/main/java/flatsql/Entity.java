@@ -16,7 +16,7 @@ public abstract class Entity {
 	 * 
 	 * @param id
 	 */
-	void id(String id) {
+	protected void id(String id) {
 		this.id = id;
 	}
 
