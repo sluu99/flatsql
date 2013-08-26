@@ -1,6 +1,7 @@
 package flatsql.exceptions;
 
 public class TypeNotRegisteredException extends Exception {
+	private static final long serialVersionUID = 1L;
 	
 	private Class<?> unregisteredType = null;
 	
