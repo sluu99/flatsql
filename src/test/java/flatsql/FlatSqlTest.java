@@ -8,6 +8,7 @@ import flatsql.test.SimpleConnectionPool;
 import flatsql.test.fixtures.Animal;
 import flatsql.test.fixtures.AnimalType;
 import flatsql.test.fixtures.NeverRegisterEntity;
+import flatsql.test.fixtures.Person;
 
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -60,6 +61,25 @@ public class FlatSqlTest extends MySqlBasedTest {
 		assertAttrNotExists("Animal", duke.id(), "DogAge");
 	}
 
+	
+	public void testArrayInsert() throws TypeNotRegisteredException, SQLException, ConnectionPoolException {
+		Person me = new Person();
+		me.setName("sluu99");
+		me.name("sluu99");
+		me.addPet("Duke");
+		me.addPet("Bear");
+		
+		flatSql.registerType(Person.class);
+		
+		Assert.assertTrue(flatSql.persist(me), "`persist` must return true if the operation is successful");
+		
+		assertRecordExists("Human", me.id(), "sluu99");
+		
+		assertAttrExists("Human", me.id(), "Name", "sluu99", null);
+		assertAttrExists("Human", me.id(), "Pets[0]", "Duke", null);
+		assertAttrExists("Human", me.id(), "Pets[1]", "Bear", null);
+	}
+	
 	
 	/**
 	 * calling persist on an unregistered type should throw TypeNotRegisteredException
