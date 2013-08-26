@@ -1,5 +1,7 @@
 package flatsql.test.fixtures;
 
+import flatsql.annotations.Ignore;
+
 public class Animal extends LivingThing {
 
 	private AnimalType animalType = null;
@@ -19,5 +21,10 @@ public class Animal extends LivingThing {
 
 	public void setPet(boolean pet) {
 		isPet = pet;
+	}
+	
+	@Ignore
+	public int getDogAge() {
+		return this.getAge() * 7;
 	}
 }

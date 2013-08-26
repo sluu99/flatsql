@@ -56,6 +56,8 @@ public class FlatSqlTest extends MySqlBasedTest {
 		assertAttrExists("Animal", duke.id(), "Age", "12", null);
 		assertAttrExists("Animal", duke.id(), "AnimalType", "DOG", null);
 		assertAttrExists("Animal", duke.id(), "Name", "Duke", null);
+		
+		assertAttrNotExists("Animal", duke.id(), "DogAge");
 	}
 
 	

@@ -1,6 +1,7 @@
 package flatsql.test;
 
 import flatsql.util.JdbcUtil;
+
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -71,17 +72,14 @@ public abstract class MySqlBasedTest {
 	/**
 	 * Assert that a record exists in the table
 	 * 
-	 * @param tableName
-	 *            Table name
-	 * @param id
-	 *            Record ID
-	 * @param entityName
-	 *            Entity name
+	 * @param tableName Table name
+	 * @param id Record ID
+	 * @param entityName Entity name
 	 */
-	protected void assertRecordExists(String tableName, String id,
-			String entityName) {
+	protected void assertRecordExists(String tableName, String id, String entityName) {
 		String query = String.format(
-				"SELECT COUNT(id) FROM %s WHERE id=? and name %s ?", tableName,
+				"SELECT COUNT(id) FROM %s WHERE id=? and name %s ?",
+				tableName,
 				(entityName == null) ? "is" : "=");
 
 		PreparedStatement stmt = null;
@@ -103,19 +101,13 @@ public abstract class MySqlBasedTest {
 	/**
 	 * Assert that an attribute exists
 	 * 
-	 * @param tableName
-	 *            The actual table name, for example UserAttr, UserLargeAttr
-	 * @param id
-	 *            Entity ID
-	 * @param key
-	 *            The key
-	 * @param value
-	 *            The value
-	 * @param meta
-	 *            The meta data
+	 * @param tableName The actual table name, for example UserAttr, UserLargeAttr
+	 * @param id  Entity ID
+	 * @param key The key
+	 * @param value The value
+	 * @param meta The meta data
 	 */
-	private void internalAssertAttrExists(String tableName, String id,
-			String key, String value, String meta) {
+	private void internalAssertAttrExists(String tableName, String id, String key, String value, String meta) {
 		String template = "SELECT COUNT(entity_id) FROM %s WHERE entity_id=? and attr_key=? and attr_value %s ? and attr_meta %s ?";
 		String valueOp = (value == null) ? "is" : "=";
 		String metaOp = (meta == null) ? "is" : "=";
@@ -147,39 +139,73 @@ public abstract class MySqlBasedTest {
 	/**
 	 * Assert that a normal attribute exists
 	 * 
-	 * @param tableName
-	 *            The (entity) table name (without the Attr part)
-	 * @param id
-	 *            Entity ID
-	 * @param key
-	 *            The key
-	 * @param value
-	 *            The value
-	 * @param meta
-	 *            The meta data
+	 * @param tableName The (entity) table name (without the Attr part)
+	 * @param id Entity ID
+	 * @param key The key
+	 * @param value The value
+	 * @param meta The meta data
 	 */
-	protected void assertAttrExists(String tableName, String id, String key,
-			String value, String meta) {
+	protected void assertAttrExists(String tableName, String id, String key, String value, String meta) {
 		this.internalAssertAttrExists(tableName + "Attr", id, key, value, meta);
 	}
 
 	/**
 	 * Assert that a normal attribute exists
 	 * 
-	 * @param tableName
-	 *            The (entity) table name (without the LargeAttr part)
-	 * @param id
-	 *            Entity ID
-	 * @param key
-	 *            The key
-	 * @param value
-	 *            The value
-	 * @param meta
-	 *            The meta data
+	 * @param tableName The (entity) table name (without the LargeAttr part)
+	 * @param id Entity ID
+	 * @param key The key
+	 * @param value The value
+	 * @param meta The meta data
 	 */
-	protected void assertLargeAttrExists(String tableName, String id,
-			String key, String value, String meta) {
+	protected void assertLargeAttrExists(String tableName, String id, String key, String value, String meta) {
 		this.internalAssertAttrExists(tableName + "LargeAttr", id, key, value,
 				meta);
+	}
+	
+	/**
+	 * Assert that an attribute does not exist
+	 * @param string
+	 * @param id
+	 * @param key
+	 */
+	private void internalAssertAttrNotExist(String tableName, String id, String key) {
+		
+		String query = String.format(
+			"SELECT COUNT(entity_id) FROM %s WHERE entity_id=? and attr_key=?", tableName);
+
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+
+		try {
+			stmt = conn.prepareStatement(query);
+			stmt.setString(1, id);
+			stmt.setString(2, key);
+
+			rs = stmt.executeQuery();
+			if (!rs.next() || rs.getInt(1) != 0) {
+				Assert.fail("Attribute must not exist");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			Assert.fail(e.getMessage());
+		} finally {
+			JdbcUtil.close(rs, stmt);
+		}		
+	}
+	
+	/**
+	 * Make sure that an attribute does not exist
+	 * @param tableName The (entity) table name (without the LargeAttr part)
+	 * @param id Entity ID
+	 * @param key The key
+	 */
+	protected void assertAttrNotExists(String tableName, String id, String key) {
+		this.internalAssertAttrNotExist(tableName + "Attr", id, key);
+	}
+
+	protected void assertLargeAttrNotExists(String tableName, String id, String key) {
+		this.internalAssertAttrNotExist(tableName + "LargeAttr", id, key);
 	}
 }
