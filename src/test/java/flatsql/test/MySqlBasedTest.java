@@ -125,7 +125,7 @@ public abstract class MySqlBasedTest {
 
 			rs = stmt.executeQuery();
 			if (!rs.next() || rs.getInt(1) != 1) {
-				Assert.fail("There must only be 1 row");
+				Assert.fail("Attribute does not exist");
 			}
 
 		} catch (SQLException e) {
