@@ -2,10 +2,12 @@ package flatsql;
 
 import flatsql.FlatSql;
 import flatsql.exceptions.ConnectionPoolException;
+import flatsql.exceptions.TypeNotRegisteredException;
 import flatsql.test.MySqlBasedTest;
 import flatsql.test.SimpleConnectionPool;
 import flatsql.test.fixtures.Animal;
 import flatsql.test.fixtures.AnimalType;
+import flatsql.test.fixtures.NeverRegisterEntity;
 
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -31,7 +33,7 @@ public class FlatSqlTest extends MySqlBasedTest {
 		}
 	}
 
-	public void testBasicInsert() {
+	public void testBasicInsert() throws TypeNotRegisteredException {
 		Animal duke = new Animal();
 		duke.setAnimalType(AnimalType.DOG);
 		duke.setPet(true);
@@ -39,8 +41,7 @@ public class FlatSqlTest extends MySqlBasedTest {
 		duke.setName("Duke");
 		duke.name("Duke");
 
-		Assert.assertTrue(flatSql.persist(duke),
-				"`persist` must return true if the operation is successful");
+		Assert.assertTrue(flatSql.persist(duke), "`persist` must return true if the operation is successful");
 		Assert.assertNotNull(duke.id());
 
 		// integrity check
@@ -57,4 +58,15 @@ public class FlatSqlTest extends MySqlBasedTest {
 		assertAttrExists("Animal", duke.id(), "Name", "Duke", null);
 	}
 
+	
+	/**
+	 * calling persist on an unregistered type should throw TypeNotRegisteredException
+	 * @throws TypeNotRegisteredException 
+	 */
+	@Test(expectedExceptions={ TypeNotRegisteredException.class })
+	public void testPersistShouldThrowTypeNotRegisteredException() throws TypeNotRegisteredException {
+		NeverRegisterEntity entity = new NeverRegisterEntity();
+		
+		flatSql.persist(entity);
+	}
 }

@@ -3,6 +3,7 @@ package flatsql;
 import java.sql.SQLException;
 
 import flatsql.exceptions.ConnectionPoolException;
+import flatsql.exceptions.TypeNotRegisteredException;
 
 /**
  * Starting point for using FlatSql
@@ -57,24 +58,26 @@ public class FlatSql {
 	 * @param entity
 	 *            The entity
 	 * @return true if the operation is successful,false otherwise
-	 * @throws SQLException
-	 * @throws ConnectionPoolException
+	 * @throws TypeNotRegisteredException Thrown when type of the entity is not registered
 	 */
-	public boolean persist(Entity entity) {
+	public boolean persist(Entity entity) throws TypeNotRegisteredException {
 		return persist(entity, null);
 	}
 
 	/**
 	 * Persist an entity into the database
 	 * 
-	 * @param entity
-	 *            The entity
-	 * @param error
-	 *            The error message will be appended to the StringBuilder
+	 * @param entity The entity
+	 * @param error The error message will be appended to the StringBuilder
 	 * @return true if the operation is successful,false otherwise
+	 * @throws TypeNotRegisteredException Thrown when type of the entity is not registered
 	 */
-	public boolean persist(Entity entity, StringBuilder error) {
+	public boolean persist(Entity entity, StringBuilder error) throws TypeNotRegisteredException {
 
+		if (!registry.isTypeRegistered(entity.getClass())) {
+			throw new TypeNotRegisteredException(entity.getClass());
+		}
+		
 		try {
 			if (entity.id() == null) {
 				entity.id(idGen.newId());
